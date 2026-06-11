@@ -22,6 +22,8 @@ from dify_plugin.errors.model import (
     InvokeServerUnavailableError,
 )
 
+from models.common_openai import build_request_headers
+
 
 logger = logging.getLogger(__name__)
 
@@ -92,13 +94,12 @@ class OpenAIRerankModel(OAICompatRerankModel):
 
         # Build API request
         endpoint_url = credentials.get("endpoint_url", "").rstrip("/")
-        api_key = credentials.get("api_key", "")
         endpoint_model_name = credentials.get("endpoint_model_name", "") or model
 
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}" if api_key else "",
-        }
+        headers = build_request_headers(
+            credentials,
+            {"Content-Type": "application/json"},
+        )
 
         # Simple string format for text-only mode
         # Use `top_n if top_n is not None else len(docs)` to correctly handle top_n=0
@@ -215,13 +216,12 @@ class OpenAIRerankModel(OAICompatRerankModel):
 
         # Build API request
         endpoint_url = credentials.get("endpoint_url", "").rstrip("/")
-        api_key = credentials.get("api_key", "")
         endpoint_model_name = credentials.get("endpoint_model_name", "") or model
 
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}" if api_key else "",
-        }
+        headers = build_request_headers(
+            credentials,
+            {"Content-Type": "application/json"},
+        )
 
         # Convert documents to ScoreMultiModalParam format
         documents_params = []

@@ -5,6 +5,8 @@ import requests
 from dify_plugin.entities.model import AIModelEntity, FetchFrom, I18nObject, ModelType
 from dify_plugin.interfaces.model.openai_compatible.speech2text import OAICompatSpeech2TextModel
 
+from models.common_openai import build_request_headers
+
 
 class OpenAISpeech2TextModel(OAICompatSpeech2TextModel):
     def _invoke(self, model: str, credentials: dict, file: IO[bytes], user: Optional[str] = None) -> str:
@@ -17,11 +19,7 @@ class OpenAISpeech2TextModel(OAICompatSpeech2TextModel):
         :param user: unique user id
         :return: text for given audio file
         """
-        headers = {}
-
-        api_key = credentials.get("api_key")
-        if api_key:
-            headers["Authorization"] = f"Bearer {api_key}"
+        headers = build_request_headers(credentials)
 
         endpoint_url = credentials.get("endpoint_url", "https://api.openai.com/v1/")
         if not endpoint_url.endswith("/"):

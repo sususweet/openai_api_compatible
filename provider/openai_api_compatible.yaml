@@ -41,6 +41,56 @@ model_credential_schema:
       placeholder:
         zh_Hans: 在此输入您的 API Key
         en_US: Enter your API Key
+    - variable: auth_type
+      label:
+        zh_Hans: API Key 认证方式
+        en_US: API Key auth type
+      type: select
+      required: false
+      default: openai_bearer
+      options:
+        - value: openai_bearer
+          label:
+            zh_Hans: Authorization Bearer（OpenAI 标准）
+            en_US: Authorization Bearer (OpenAI standard)
+        - value: api_key_header
+          label:
+            zh_Hans: 自定义 API Key 请求头（如 X-API-Key）
+            en_US: Custom API Key header (e.g. X-API-Key)
+      help:
+        zh_Hans: 若接口要求 X-API-Key 等自定义请求头，请选择「自定义 API Key 请求头」。
+        en_US: Choose custom API Key header when the API expects headers like X-API-Key.
+    - variable: auth_header_name
+      label:
+        zh_Hans: 认证请求头名称
+        en_US: Auth header name
+      type: text-input
+      required: false
+      default: X-API-Key
+      show_on:
+        - variable: auth_type
+          value: api_key_header
+      placeholder:
+        zh_Hans: 例如 X-API-Key
+        en_US: e.g. X-API-Key
+      help:
+        zh_Hans: 请求头名称须与接口文档一致，例如 X-API-Key。
+        en_US: Must match the API docs, e.g. X-API-Key.
+    - variable: auth_header_prefix
+      label:
+        zh_Hans: 认证请求头前缀
+        en_US: Auth header prefix
+      type: text-input
+      required: false
+      show_on:
+        - variable: auth_type
+          value: api_key_header
+      placeholder:
+        zh_Hans: 通常留空，直接使用 API Key 作为请求头值
+        en_US: Usually leave empty to send the raw API Key
+      help:
+        zh_Hans: 仅在请求头值需要前缀时填写；X-API-Key 场景请留空。
+        en_US: Only set a prefix when required; leave empty for X-API-Key.
     - variable: language
       label:
         en_US: Language

@@ -38,6 +38,8 @@ from dify_plugin.entities.model.text_embedding import (
     MultiModalContentType,
 )
 
+from models.common_openai import build_request_headers, create_openai_client
+
 
 logger = logging.getLogger(__name__)
 
@@ -216,10 +218,10 @@ class OpenAITextEmbeddingModel(OAICompatEmbeddingModel):
 
             # Standard path for text-only inputs: batched {"input": [...]} format
             if text_inputs:
-                headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {api_key}" if api_key else "",
-                }
+                headers = build_request_headers(
+                    credentials,
+                    {"Content-Type": "application/json"},
+                )
                 text_embeddings = []
 
                 encoding_format = _get_encoding_format(credentials)
@@ -324,7 +326,7 @@ class OpenAITextEmbeddingModel(OAICompatEmbeddingModel):
         Embed inputs containing multimodal content using vLLM chat embeddings API.
         Returns (embeddings, used_tokens, total_price, unit_price, price_unit, currency).
         """
-        client = OpenAI(api_key=api_key, base_url=endpoint_url)
+        client = create_openai_client(endpoint_url, credentials)
 
         batched_embeddings = []
         used_tokens = 0
